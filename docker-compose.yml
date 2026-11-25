@@ -1,0 +1,15 @@
+services:
+  lenen:
+    build: .
+    image: lenen-checkin:latest
+    container_name: lenen
+    restart: unless-stopped
+    ports:
+      - "8800:8800"
+    volumes:
+      - ./data:/app/data        # 数据库/照片/备份都在这里，升级镜像不丢数据
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8800/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
